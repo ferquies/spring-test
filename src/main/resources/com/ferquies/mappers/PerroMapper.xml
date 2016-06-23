@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+  'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='com.ferquies.dao.PerroDao'>
+
+  <select id='getPerrosByNombre' parameterType='String' resultType='com.ferquies.domain.Perro'>
+  	SELECT  ID as id, NOMBRE as nombre, RAZA as raza, 
+  			SEXO as sexo, COLOR as color, TAMANO as tamano, 
+  			EDAD as edad, FOTO as foto, ADOPTADO as adoptado 
+	FROM PERROS WHERE NOMBRE = #{nombre}
+  </select>
+
+   <resultMap type='Perro' id='PerroMap'>
+    <id property='id' column='ID'/>
+    <result property="id" column="ID"/>
+    <result property='nombre' column='NOMBRE'/>
+    <result property='raza' column='RAZA'/>
+    <result property='sexo' column='SEXO'/>
+    <result property='color' column='COLOR'/>
+    <result property='tamano' column='TAMANO'/>
+    <result property='edad' column='EDAD'/>
+    <result property='foto' column='FOTO'/>
+    <result property='adoptado' column='ADOPTADO'/>   
+   </resultMap>
+   
+   <select id="getPerroById" parameterType="int" resultMap="PerroMap">
+   	SELECT  ID as id, NOMBRE as nombre, RAZA as raza, 
+  			SEXO as sexo, COLOR as color, TAMANO as tamano, 
+  			EDAD as edad, FOTO as foto, ADOPTADO as adoptado 
+	FROM PERROS 
+	WHERE ID = #{id}
+   </select>
+   
+   <select id='getPerrosWhere' parameterType='Perro' resultMap="PerroMap">
+  	SELECT  ID as id, NOMBRE as nombre, RAZA as raza, 
+  			SEXO as sexo, COLOR as color, TAMANO as tamano, 
+  			EDAD as edad, FOTO as foto, ADOPTADO as adoptado 
+	FROM PERROS 
+	WHERE 1 = 1 
+	<if test="id != null">
+		AND ID = #{id}
+	</if>
+	<if test="nombre != null">
+		AND NOMBRE = #{nombre}
+	</if>
+	<if test="raza != null">
+		AND RAZA = #{raza}
+	</if>
+	<if test="sexo != null">
+		AND SEXO = #{sexo}
+	</if>
+	<if test="color != null">
+		AND COLOR = #{color}
+	</if>
+	<if test="tamano != null">
+		AND TAMANO = #{tamano}
+	</if>
+	<if test="edad != null">
+		AND EDAD = #{edad}
+	</if>
+	<if test="adoptado != null">
+		AND ADOPTADO = #{adoptado}
+	</if>
+  </select>
+
+  <select id='getAllPerros' resultMap='PerroMap'>
+	SELECT ID, NOMBRE, RAZA, SEXO, COLOR, TAMANO, EDAD, FOTO, ADOPTADO
+	FROM PERROS
+  </select>
+  
+  <select id='getAllPerrosList' resultMap='PerroMap'>
+	SELECT P.ID, NOMBRE, RAZA, SEXO, COLOR, TAMANO, EDAD, FOTO, AV.DESCRIPCION AS ADOPTADO
+	FROM PERROS P
+	LEFT JOIN ADOPTADO_VAL AV ON P.ADOPTADO = AV.ID
+  </select>
+  
+  <select id="getAdoptadoCombo" resultType="com.ferquies.utils.ComboOption">
+  	SELECT ID value, DESCRIPCION label
+  	FROM ADOPTADO_VAL
+  </select>
+
+  <insert id='insertPerro' parameterType='Perro' useGeneratedKeys='true' keyProperty='id'>
+	INSERT  INTO PERROS(NOMBRE, RAZA, SEXO, COLOR, TAMANO, EDAD, FOTO, ADOPTADO)
+			VALUES(#{nombre},#{raza},#{sexo},#{color},#{tamano},#{edad},#{foto},#{adoptado})
+  </insert>
+
+  <update id='updatePerro' parameterType='Perro'>
+    UPDATE PERROS
+    SET
+     NOMBRE = #{nombre},
+     RAZA = #{raza},
+     SEXO = #{sexo},
+     COLOR = #{color},
+     TAMANO = #{tamano},
+     EDAD = #{edad},
+     FOTO = #{foto},
+     ADOPTADO = #{adoptado}
+    WHERE ID = #{id}
+  </update>
+
+  <delete id='deletePerro' parameterType='int'>
+    DELETE FROM PERROS WHERE ID = #{id}
+  </delete>
+
+</mapper>
